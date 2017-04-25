@@ -15,7 +15,7 @@ setup(
     name='pyhcrf',
     version='0.0.1',
     packages=['pyhcrf'],
-    install_requires=['numpy>=1.9'],
+    install_requires=['numpy>=1.9', 'Cython'],
     ext_modules=cythonize('pyhcrf/algorithms.pyx'),
     include_dirs=[numpy.get_include()],
     url='https://github.com/dirko/pyhcrf',
