@@ -6,11 +6,27 @@ from scipy.sparse import csr_matrix
 from pyhcrf import Hcrf
 from pyhcrf.hcrf import forward_backward
 from pyhcrf.hcrf import log_likelihood
+from sklearn.model_selection import GridSearchCV
 
 TEST_PRECISION = 3
 
 
 class TestHcrf(unittest.TestCase):
+    def test_gridsearch(self):
+        print("Testing with GridSearch...")
+        param_grid = {'num_states': np.arange(3, 10),
+                      'l2_regularization': 10.0 ** np.arange(-2, 4)}
+        X = [np.array([[1, 2], [5, 9], [7, 3.0]], dtype='float64'),
+             np.array([[6, -2], [3, 3.0]], dtype='float64'),
+             np.array([[1, -1.0]], dtype='float64'),
+             np.array([[1, 1], [5, 3], [4, 2], [3.0, 3]], dtype='float64')]
+        y = [0, 1, 0, 1]
+        clf = GridSearchCV(estimator=Hcrf(), param_grid=param_grid, cv=2)
+        clf.fit(X, y)
+        actual = clf.predict(X)
+        expected = [0, 1, 0, 1]
+        self.assertEqual(actual, expected)
+
     def test_train_regression(self):
         # Lets add a test just to get everything working so we can refactor.
         X = [np.array([[1, 2], [5, 9], [7, 3.0]], dtype='float64'),

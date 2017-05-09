@@ -9,9 +9,9 @@
 import numpy
 from scipy.optimize.lbfgsb import fmin_l_bfgs_b
 from pyhcrf.algorithms import forward_backward, log_likelihood
+from sklearn.base import BaseEstimator, ClassifierMixin
 
-
-class Hcrf(object):
+class Hcrf(BaseEstimator, ClassifierMixin):
     """
     The HCRF model.
 
@@ -41,7 +41,7 @@ class Hcrf(object):
         self.transitions = transitions
         self.state_parameter_noise = state_parameter_noise
         self.transition_parameter_noise = transition_parameter_noise
-        self.optimizer_kwargs = optimizer_kwargs if optimizer_kwargs else {}
+        self.optimizer_kwargs = optimizer_kwargs
         self._sgd_stepsize = sgd_stepsize
         self._sgd_verbosity = sgd_verbosity
         self._random_seed = random_seed
@@ -120,7 +120,10 @@ class Hcrf(object):
                     if i % self._sgd_verbosity == 0:
                         print('{:10} {:10.2f} {:10.2f}'.format(i, -total_nll / (i + 1) * len(y), sum(abs(ngradient))))
 
-        self._optimizer_result = fmin_l_bfgs_b(objective_function, initial_parameter_vector, **self.optimizer_kwargs)
+        if self.optimizer_kwargs is not None:
+            self._optimizer_result = fmin_l_bfgs_b(objective_function, initial_parameter_vector, **self.optimizer_kwargs)
+        else:
+            self._optimizer_result = fmin_l_bfgs_b(objective_function, initial_parameter_vector)
         self.state_parameters, self.transition_parameters = self._unstack_parameters(self._optimizer_result[0])
         return self
 
