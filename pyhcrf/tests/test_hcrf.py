@@ -4,8 +4,7 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 import numpy as np
 from scipy.sparse import csr_matrix
 from pyhcrf import Hcrf
-from pyhcrf.hcrf import forward_backward
-from pyhcrf.hcrf import log_likelihood
+from pyhcrf.hcrf import forward_backward, log_lik
 from sklearn.model_selection import GridSearchCV
 
 TEST_PRECISION = 3
@@ -132,8 +131,8 @@ class TestHcrf(unittest.TestCase):
         for trans in range(len(transition_parameters)):
             tpd = np.zeros(transition_parameters.shape, dtype='float64')
             tpd[trans] = delta
-            ll0, _, dtp0 = log_likelihood(x, cy, state_parameters, transition_parameters, transitions)
-            ll1, _, dtp1 = log_likelihood(x, cy, state_parameters, transition_parameters + tpd, transitions)
+            ll0, _, dtp0 = log_lik(x, cy, state_parameters, transition_parameters, transitions)
+            ll1, _, dtp1 = log_lik(x, cy, state_parameters, transition_parameters + tpd, transitions)
             expected_der = (ll1 - ll0) / delta
             actual_der = dtp0[trans]
             print(trans, '    ', expected_der, actual_der)#, dsp0
@@ -161,8 +160,8 @@ class TestHcrf(unittest.TestCase):
         for trans in range(len(transition_parameters)):
             tpd = np.zeros(transition_parameters.shape, dtype='float64')
             tpd[trans] = delta
-            ll0, _, dtp0 = log_likelihood(x, cy, state_parameters, transition_parameters, transitions)
-            ll1, _, dtp1 = log_likelihood(x, cy, state_parameters, transition_parameters + tpd, transitions)
+            ll0, _, dtp0 = log_lik(x, cy, state_parameters, transition_parameters, transitions)
+            ll1, _, dtp1 = log_lik(x, cy, state_parameters, transition_parameters + tpd, transitions)
             expected_der = (ll1 - ll0) / delta
             actual_der = dtp0[trans]
             print(trans, '    ', expected_der, actual_der)#, dsp0
@@ -196,8 +195,8 @@ class TestHcrf(unittest.TestCase):
                 for w in range(W):
                     spd = np.zeros(state_parameters.shape, dtype='float64')
                     spd[k, s, w] = delta
-                    ll0, dsp0, _ = log_likelihood(x, cy, state_parameters, transition_parameters, transitions)
-                    ll1, dsp1, _ = log_likelihood(x, cy, state_parameters + spd, transition_parameters, transitions)
+                    ll0, dsp0, _ = log_lik(x, cy, state_parameters, transition_parameters, transitions)
+                    ll1, dsp1, _ = log_lik(x, cy, state_parameters + spd, transition_parameters, transitions)
                     expected_der = (ll1 - ll0) / delta
                     actual_der = dsp0[k, s, w]
                     print(k, s, w, '    ', expected_der, actual_der)#, dsp0
@@ -226,8 +225,8 @@ class TestHcrf(unittest.TestCase):
         for trans in range(len(transition_parameters)):
             tpd = np.zeros(transition_parameters.shape, dtype='float64')
             tpd[trans] = delta
-            ll0, _, dtp0 = log_likelihood(x, cy, state_parameters, transition_parameters, transitions)
-            ll1, _, dtp1 = log_likelihood(x, cy, state_parameters, transition_parameters + tpd, transitions)
+            ll0, _, dtp0 = log_lik(x, cy, state_parameters, transition_parameters, transitions)
+            ll1, _, dtp1 = log_lik(x, cy, state_parameters, transition_parameters + tpd, transitions)
             expected_der = (ll1 - ll0) / delta
             actual_der = dtp0[trans]
             print(trans, '    ', expected_der, actual_der)#, dsp0
