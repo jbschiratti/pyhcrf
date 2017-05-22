@@ -58,11 +58,11 @@ def forward_backward(ndarray[double, ndim=3] x_dot_parameters,
 def dummy():
     pass
 
-def log_likelihood(x,
-                   long cy,
-                   ndarray[double, ndim=3] state_parameters,
-                   ndarray[double, ndim=1] transition_parameters,
-                   ndarray[long, ndim=2] transitions):
+def log_lik(x,
+            long cy,
+            ndarray[double, ndim=3] state_parameters,
+            ndarray[double, ndim=1] transition_parameters,
+            ndarray[long, ndim=2] transitions):
     cdef unsigned int n_time_steps = x.shape[0]
     cdef unsigned int n_features = x.shape[1]
     cdef unsigned int n_states = state_parameters.shape[1]
